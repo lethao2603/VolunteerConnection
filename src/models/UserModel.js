@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
         role: { type: String, required: true, default: 'volunteer' },
         phone: { type: Number },
         avatar: { type: String },
+        dateOfBirth: { type: Date },
+        blood: { type: String },
+        placeOfOrigin: { type: String },
     },
     {
         timestamps: true,
