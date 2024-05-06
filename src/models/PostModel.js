@@ -12,7 +12,7 @@ const postSchema = new mongoose.Schema(
         share: [{ type: String }], // Shared with other users
         commitment: { type: Date },
         Feedback: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // References to User collection
-        chatId: { type: String, ref: 'Chat' }, // Reference to Chat collection
+        chatId: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }, // Reference to Chat collection
     },
     {
         timestamps: true,
