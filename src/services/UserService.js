@@ -58,12 +58,12 @@ const loginUser = (userLogin) => {
             }
             const access_token = await generatedAccessToken({
                 id: checkUser.id,
-                role: checkUser.role,
+                role: checkUser.roles,
             })
 
             const refresh_token = await generatedRefreshToken({
                 id: checkUser.id,
-                role: checkUser.role,
+                role: checkUser.roles,
             })
 
             resolve({

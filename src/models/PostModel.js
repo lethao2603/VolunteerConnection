@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema(
         organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Reference to User collection
         volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // References to User collection
         benefits: { type: String },
-        status: { type: String, enum: ['success'] },   // Status of the post
+        status: { type: String, enum: ['success', 'pending'] },   // Status of the post
         share: [{ type: String }], // Shared with other users
         commitment: { type: Date },
         Feedback: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // References to User collection

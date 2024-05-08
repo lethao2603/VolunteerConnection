@@ -30,7 +30,7 @@ const refreshTokenJwtService = (token) => {
                 }
                 const access_token = await generatedAccessToken({
                     id: user?.id,
-                    role: user?.role
+                    role: user?.roles
                 })
                 resolve({
                     status: 'OK',
