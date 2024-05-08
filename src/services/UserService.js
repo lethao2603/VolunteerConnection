@@ -70,6 +70,7 @@ const loginUser = (userLogin) => {
                 status: 'OK',
                 message: 'Success',
                 access_token,
+                id: checkUser.id,
                 refresh_token
             })
         } catch (e) {
