@@ -4,7 +4,7 @@ const createPost = async (req, res) => {
     try {
         const { title, description } = req.body
         if (!title || !description) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The input is required'
             })
@@ -23,7 +23,7 @@ const getDetailsPost = async (req, res) => {
     try {
         const postId = req.params.id
         if(!postId) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The postId is require'
             })
@@ -42,7 +42,7 @@ const updatePost = async (req, res) => {
         const postId = req.params.id
         const data = req.body
         if(!postId) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The postId is require'
             })
@@ -60,7 +60,7 @@ const deletePost = async (req, res) => {
     try {
         const postId = req.params.id
         if(!postId) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: 'ERR',
                 message: 'The postId is require'
             })

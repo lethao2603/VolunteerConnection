@@ -10,7 +10,7 @@ const createUser = (newUser) => {
                 email: email
             })
             if (checkUser !== null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The email is already in use'
                 })
@@ -43,7 +43,7 @@ const loginUser = (userLogin) => {
                 email: email
             })
             if (checkUser === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined'
                 })
@@ -51,7 +51,7 @@ const loginUser = (userLogin) => {
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
 
             if(!comparePassword) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The password or username is incorrect'
                 })
@@ -86,7 +86,7 @@ const updateUser = (id, data) => {
                 _id: id,
             })
             if (checkUser === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined'
                 })
@@ -111,7 +111,7 @@ const deleteUser = (id) => {
                 _id: id,
             })
             if (checkUser === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined'
                 })
@@ -164,7 +164,7 @@ const getDetailsUser = (id) => {
                 _id: id,
             })
             if (user === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined',
                 })

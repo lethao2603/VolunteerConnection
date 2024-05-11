@@ -48,7 +48,7 @@ const updateComment = (id, data) => {
                 _id: id,
             })
             if (checkComment === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The comment is not defined'
                 })
@@ -73,7 +73,7 @@ const deleteComment = (id) => {
                 _id: id,
             })
             if (checkComment === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The comment is not defined'
                 })

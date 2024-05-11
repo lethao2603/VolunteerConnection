@@ -37,7 +37,7 @@ const getDetailsPost = (id) => {
                 _id: id,
             })
             if (post === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The post is not defined',
                 })
@@ -61,7 +61,7 @@ const updatePost = (id, data) => {
                 _id: id,
             })
             if (checkPost === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The user is not defined'
                 })
@@ -86,7 +86,7 @@ const deletePost = (id) => {
                 _id: id,
             })
             if (checkPost === null) {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The post is not defined'
                 })
