@@ -2,7 +2,7 @@ const Post = require('../models/PostModel')
 
 const createPost = (newPost) => {
     return new Promise(async (resolve, reject) => {
-        const { title, location, description, organizer, volunteers, benefits, status, share, commitment, Feedback, chatId } = newPost
+        const { title, location, description, organizer, volunteers, benefits, status, share, commitment, images, Feedback, chatId } = newPost
         try {
             const createdPost = await Post.create({
                 title, 
@@ -14,6 +14,7 @@ const createPost = (newPost) => {
                 status, 
                 share, 
                 commitment, 
+                images,
                 Feedback, 
                 chatId
             })
@@ -47,6 +48,52 @@ const getDetailsPost = (id) => {
                 status: 'OK',
                 message: 'Success',
                 data: post,
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
+const getManyPost = (limit, page, sort, filter) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const totalPost = await Post.count()
+            if(filter) {
+                const label = filter[0]
+                const allPostsFilter = await Post.find({
+                    [label]: { '$regex': filter[1] }
+                }).limit(limit).skip(page * limit)
+                resolve({
+                    status: 'OK',
+                    message: 'List all Posts after filtering',
+                    data: allPostsFilter,
+                    total: totalPost,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalPost / limit),
+                })
+            }
+            if(sort) {
+                const objectSort = {}
+                objectSort[sort[1]] = sort[0]
+                const allPostsSort = await Post.find().limit(limit).skip(page * limit).sort(objectSort)
+                resolve({
+                    status: 'OK',
+                    message: 'List all Posts after sorting',
+                    data: allPostsSort,
+                    total: totalPost,
+                    pageCurrent: Number(page + 1),
+                    totalPage: Math.ceil(totalPost / limit),
+                })
+            }
+            const allPosts = await Post.find().limit(limit).skip(page * limit)
+            resolve({
+                status: 'OK',
+                message: 'List all Posts',
+                data: allPosts,
+                total: totalPost,
+                pageCurrent: Number(page + 1),
+                totalPage: Math.ceil(totalPost / limit),
             })
         } catch (e) {
             reject(e);
@@ -106,6 +153,7 @@ const deletePost = (id) => {
 module.exports = { 
     createPost,
     getDetailsPost,
+    getManyPost,
     updatePost,
     deletePost,
 }

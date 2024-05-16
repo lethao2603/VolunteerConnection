@@ -37,6 +37,18 @@ const getDetailsPost = async (req, res) => {
     }
 };
 
+const getManyPost = async (req, res) => {
+    try {
+        const { limit, page, sort, filter } = req.query
+        const response = await PostService.getManyPost(Number(limit) || 10, Number(page) || 0, sort, filter)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+};
+
 const updatePost = async (req, res) => {
     try {
         const postId = req.params.id
@@ -77,6 +89,7 @@ const deletePost = async (req, res) => {
 module.exports = { 
     createPost,
     getDetailsPost,
+    getManyPost,
     updatePost,
     deletePost,
 }
