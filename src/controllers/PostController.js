@@ -39,8 +39,8 @@ const getDetailsPost = async (req, res) => {
 
 const getManyPost = async (req, res) => {
     try {
-        const { limit, page, sort, filter } = req.query
-        const response = await PostService.getManyPost(Number(limit) || 10, Number(page) || 0, sort, filter)
+        const { limit, page } = req.query
+        const response = await PostService.getManyPost(Number(limit) || 10, Number(page) || 0)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

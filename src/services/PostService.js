@@ -55,37 +55,10 @@ const getDetailsPost = (id) => {
     })
 };
 
-const getManyPost = (limit, page, sort, filter) => {
+const getManyPost = (limit, page) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const totalPost = await Post.count()
-            if(filter) {
-                const label = filter[0]
-                const allPostsFilter = await Post.find({
-                    [label]: { '$regex': filter[1] }
-                }).limit(limit).skip(page * limit)
-                resolve({
-                    status: 'OK',
-                    message: 'List all Posts after filtering',
-                    data: allPostsFilter,
-                    total: totalPost,
-                    pageCurrent: Number(page + 1),
-                    totalPage: Math.ceil(totalPost / limit),
-                })
-            }
-            if(sort) {
-                const objectSort = {}
-                objectSort[sort[1]] = sort[0]
-                const allPostsSort = await Post.find().limit(limit).skip(page * limit).sort(objectSort)
-                resolve({
-                    status: 'OK',
-                    message: 'List all Posts after sorting',
-                    data: allPostsSort,
-                    total: totalPost,
-                    pageCurrent: Number(page + 1),
-                    totalPage: Math.ceil(totalPost / limit),
-                })
-            }
+            const totalPost = await Post.countDocuments()
             const allPosts = await Post.find().limit(limit).skip(page * limit)
             resolve({
                 status: 'OK',
