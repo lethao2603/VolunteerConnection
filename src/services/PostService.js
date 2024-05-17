@@ -2,7 +2,7 @@ const Post = require('../models/PostModel')
 
 const createPost = (newPost) => {
     return new Promise(async (resolve, reject) => {
-        const { title, location, description, organizer, volunteers, benefits, status, share, commitment, Feedback, chatId } = newPost
+        const { title, location, description, organizer, volunteers, benefits, status, share, commitment, images, Feedback, chatId } = newPost
         try {
             const createdPost = await Post.create({
                 title, 
@@ -14,6 +14,7 @@ const createPost = (newPost) => {
                 status, 
                 share, 
                 commitment, 
+                images,
                 Feedback, 
                 chatId
             })
@@ -47,6 +48,25 @@ const getDetailsPost = (id) => {
                 status: 'OK',
                 message: 'Success',
                 data: post,
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
+const getManyPost = (limit, page) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const totalPost = await Post.countDocuments()
+            const allPosts = await Post.find({ status: 'success' }).limit(limit).skip(page * limit)
+            resolve({
+                status: 'OK',
+                message: 'List all Posts',
+                data: allPosts,
+                total: totalPost,
+                pageCurrent: Number(page + 1),
+                totalPage: Math.ceil(totalPost / limit),
             })
         } catch (e) {
             reject(e);
@@ -106,6 +126,7 @@ const deletePost = (id) => {
 module.exports = { 
     createPost,
     getDetailsPost,
+    getManyPost,
     updatePost,
     deletePost,
 }
