@@ -59,7 +59,7 @@ const getManyPost = (limit, page) => {
     return new Promise(async (resolve, reject) => {
         try {
             const totalPost = await Post.countDocuments()
-            const allPosts = await Post.find().limit(limit).skip(page * limit)
+            const allPosts = await Post.find({ status: 'success' }).limit(limit).skip(page * limit)
             resolve({
                 status: 'OK',
                 message: 'List all Posts',
