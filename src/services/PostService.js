@@ -139,7 +139,7 @@ const reviewPost = (id) => {
             const originalDescription = checkPost.description.join(' ');
             const escapedDescription = escapeHtml(originalDescription);
 
-            if (originalDescription.length > 1000) {
+            if (originalDescription.length > 3000) {
                 return reject({
                     status: 'ERR',
                     message: 'The system displays an error message about the content exceeding the allowed length.',
