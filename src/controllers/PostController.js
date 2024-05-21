@@ -49,6 +49,24 @@ const getManyPost = async (req, res) => {
     }
 };
 
+const getManyPostUser = async (req, res) => {
+    try {
+        const userId = req.params.id
+        if(!userId) {
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'The userId is require'
+            })
+        }
+        const response = await PostService.getManyPostUser(userId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+};
+
 const updatePost = async (req, res) => {
     try {
         const postId = req.params.id
@@ -108,6 +126,7 @@ module.exports = {
     createPost,
     getDetailsPost,
     getManyPost,
+    getManyPostUser,
     updatePost,
     reviewPost,
     deletePost,

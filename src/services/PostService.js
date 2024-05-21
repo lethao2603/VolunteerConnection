@@ -1,5 +1,6 @@
 const Post = require('../models/PostModel')
 const criteria = require('../config/criteria');
+const escapeHtml = require('escape-html');
 
 const createPost = (newPost) => {
     return new Promise(async (resolve, reject) => {
@@ -75,6 +76,21 @@ const getManyPost = (limit, page) => {
     })
 };
 
+const getManyPostUser = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allPosts = await Post.find({ organizer: id })
+            resolve({
+                status: 'OK',
+                message: 'List all Posts for User',
+                data: allPosts,
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
 const updatePost = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -119,6 +135,24 @@ const reviewPost = (id) => {
                 criteria.some(keyword => containsKeyword(sentence, keyword))
             );
 
+            // Escape description and check for unsafe content
+            const originalDescription = checkPost.description.join(' ');
+            const escapedDescription = escapeHtml(originalDescription);
+
+            if (originalDescription.length > 1000) {
+                return reject({
+                    status: 'ERR',
+                    message: 'The system displays an error message about the content exceeding the allowed length.',
+                });
+            }
+
+            if (originalDescription !== escapedDescription) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Your content contains potentially unsafe code',
+                });
+            }
+
             if (descriptionMatches) {
                 const updatedPost = await Post.findByIdAndUpdate(id, { status: 'success' }, { new: true })
                 resolve({
@@ -127,10 +161,9 @@ const reviewPost = (id) => {
                     data: updatedPost,
                 })
             } else {
-                resolve({
+                reject({
                     status: 'ERR',
                     message: 'The post has not been approved',
-                    data: checkPost,
                 })
             }
             
@@ -168,6 +201,7 @@ module.exports = {
     createPost,
     getDetailsPost,
     getManyPost,
+    getManyPostUser,
     updatePost,
     reviewPost,
     deletePost,
