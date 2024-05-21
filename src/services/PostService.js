@@ -1,4 +1,5 @@
 const Post = require('../models/PostModel')
+const criteria = require('../config/criteria');
 
 const createPost = (newPost) => {
     return new Promise(async (resolve, reject) => {
@@ -99,6 +100,46 @@ const updatePost = (id, data) => {
     })
 };
 
+const reviewPost = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkPost = await Post.findOne({
+                _id: id,
+            })
+            if (checkPost === null) {
+                reject({
+                    status: 'ERR',
+                    message: 'The post is not defined'
+                })
+            }
+
+            const containsKeyword = (sentence, keyword) => sentence.toLowerCase().includes(keyword.toLowerCase());
+
+            const descriptionMatches = checkPost.description.some(sentence => 
+                criteria.some(keyword => containsKeyword(sentence, keyword))
+            );
+
+            if (descriptionMatches) {
+                const updatedPost = await Post.findByIdAndUpdate(id, { status: 'success' }, { new: true })
+                resolve({
+                    status: 'OK',
+                    message: 'The post has been approved',
+                    data: updatedPost,
+                })
+            } else {
+                resolve({
+                    status: 'ERR',
+                    message: 'The post has not been approved',
+                    data: checkPost,
+                })
+            }
+            
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
 const deletePost = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -128,5 +169,6 @@ module.exports = {
     getDetailsPost,
     getManyPost,
     updatePost,
+    reviewPost,
     deletePost,
 }
