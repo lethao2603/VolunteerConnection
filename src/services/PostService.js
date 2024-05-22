@@ -1,4 +1,6 @@
 const Post = require('../models/PostModel')
+const criteria = require('../config/criteria');
+const escapeHtml = require('escape-html');
 
 const createPost = (newPost) => {
     return new Promise(async (resolve, reject) => {
@@ -74,6 +76,21 @@ const getManyPost = (limit, page) => {
     })
 };
 
+const getManyPostUser = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allPosts = await Post.find({ organizer: id })
+            resolve({
+                status: 'OK',
+                message: 'List all Posts for User',
+                data: allPosts,
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
 const updatePost = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -93,6 +110,63 @@ const updatePost = (id, data) => {
                 message: 'Success',
                 data: updatedPost,
             })
+        } catch (e) {
+            reject(e);
+        }
+    })
+};
+
+const reviewPost = (id) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkPost = await Post.findOne({
+                _id: id,
+            })
+            if (checkPost === null) {
+                reject({
+                    status: 'ERR',
+                    message: 'The post is not defined'
+                })
+            }
+
+            const containsKeyword = (sentence, keyword) => sentence.toLowerCase().includes(keyword.toLowerCase());
+
+            const descriptionMatches = checkPost.description.some(sentence => 
+                criteria.some(keyword => containsKeyword(sentence, keyword))
+            );
+
+            // Escape description and check for unsafe content
+            const originalDescription = checkPost.description.join(' ');
+            const escapedDescription = escapeHtml(originalDescription);
+
+            if (originalDescription.length > 3000) {
+                return reject({
+                    status: 'ERR',
+                    message: 'The system displays an error message about the content exceeding the allowed length.',
+                });
+            }
+
+            if (originalDescription !== escapedDescription) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Your content contains potentially unsafe code',
+                });
+            }
+
+            if (descriptionMatches) {
+                const updatedPost = await Post.findByIdAndUpdate(id, { status: 'success' }, { new: true })
+                resolve({
+                    status: 'OK',
+                    message: 'The post has been approved',
+                    data: updatedPost,
+                })
+            } else {
+                reject({
+                    status: 'ERR',
+                    message: 'The post has not been approved',
+                })
+            }
+            
         } catch (e) {
             reject(e);
         }
@@ -127,6 +201,8 @@ module.exports = {
     createPost,
     getDetailsPost,
     getManyPost,
+    getManyPostUser,
     updatePost,
+    reviewPost,
     deletePost,
 }

@@ -2,8 +2,8 @@ const PostService = require('../services/PostService');
 
 const createPost = async (req, res) => {
     try {
-        const { title, description } = req.body
-        if (!title || !description) {
+        const { description } = req.body
+        if (!description) {
             return res.status(404).json({
                 status: 'ERR',
                 message: 'The input is required'
@@ -49,6 +49,24 @@ const getManyPost = async (req, res) => {
     }
 };
 
+const getManyPostUser = async (req, res) => {
+    try {
+        const userId = req.params.id
+        if(!userId) {
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'The userId is require'
+            })
+        }
+        const response = await PostService.getManyPostUser(userId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+};
+
 const updatePost = async (req, res) => {
     try {
         const postId = req.params.id
@@ -60,6 +78,24 @@ const updatePost = async (req, res) => {
             })
         }
         const response = await PostService.updatePost(postId, data)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+};
+
+const reviewPost = async (req, res) => {
+    try {
+        const postId = req.params.id
+        if(!postId) {
+            return res.status(404).json({
+                status: 'ERR',
+                message: 'The postId is require'
+            })
+        }
+        const response = await PostService.reviewPost(postId)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -90,6 +126,8 @@ module.exports = {
     createPost,
     getDetailsPost,
     getManyPost,
+    getManyPostUser,
     updatePost,
+    reviewPost,
     deletePost,
 }
