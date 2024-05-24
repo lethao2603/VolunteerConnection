@@ -1,5 +1,6 @@
 const Post = require('../models/PostModel')
 const criteria = require('../config/criteria');
+const communityStandardsViolations = require('../config/communityStandardsViolations');
 const escapeHtml = require('escape-html');
 
 const createPost = (newPost) => {
@@ -135,6 +136,10 @@ const reviewPost = (id) => {
                 criteria.some(keyword => containsKeyword(sentence, keyword))
             );
 
+            const violateStandards = checkPost.description.some(sentence => 
+                communityStandardsViolations.some(keyword => containsKeyword(sentence, keyword))
+            );
+
             // Escape description and check for unsafe content
             const originalDescription = checkPost.description.join(' ');
             const escapedDescription = escapeHtml(originalDescription);
@@ -150,6 +155,13 @@ const reviewPost = (id) => {
                 return reject({
                     status: 'ERR',
                     message: 'Your content contains potentially unsafe code',
+                });
+            }
+
+            if (violateStandards) {
+                return reject({
+                    status: 'ERR',
+                    message: 'Your content contains language that violates community standards',
                 });
             }
 
